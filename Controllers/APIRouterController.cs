@@ -48,7 +48,7 @@ namespace Router.Controllers
         {
             var jsonData = routerRequest.JSONBody != null ? JObject.Parse(Convert.ToString(routerRequest.JSONBody)) : routerRequest.JSONBody;
 
-            _logger.LogInformation($"JSON Date: {jsonData.ToString()}");
+            _logger.LogInformation($"JSON Date: {jsonData?.ToString()}");
 
             string otherURL = string.Empty;
             var response = await _routerDataContext.CRUDOperations(routerRequest.URL, routerRequest.MethodType, routerRequest.Authenticator, routerRequest.Headers, jsonData/*, routerRequest.GUID, routerRequest.ApiType, routerRequest.CreateCSRFCreation, routerRequest.isCheckErrorResponse, otherURL, null*/);

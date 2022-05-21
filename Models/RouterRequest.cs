@@ -8,7 +8,7 @@ namespace Router.Models
     public class RouterRequest
     {
         public string URL { get; set; }
-        public string MethodType { get; set; }
+        public string MethodType { get; set; } = "GET";
         public object JSONBody { get; set; }
         public Authenticator Authenticator { get; set; }
         public List<Header> Headers { get; set; }

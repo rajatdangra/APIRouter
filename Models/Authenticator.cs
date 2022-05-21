@@ -10,12 +10,12 @@ namespace Router.Models
     public class Authenticator
     {
         public TokenType TokenType { get; set; }
-        public string ApiKey { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public bool IsEncode { get; set; }
+        public string ApiKey { get; set; } = string.Empty;
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        public bool IsEncode { get; set; } = false;
 
-        //Converts API Key to Base64 
+        //Converts API Key to Base64
         public static string Encoding(string toEncode)
         {
             byte[] bytes = System.Text.Encoding.Default.GetBytes(toEncode);

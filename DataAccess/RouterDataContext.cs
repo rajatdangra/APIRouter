@@ -52,7 +52,7 @@ namespace Router.DataAccess.DataContext
                 sbRouter.Append($"Router URL: {url} {Environment.NewLine}");
                 sbRouter.Append($"Method: {methodType} {Environment.NewLine}");
 
-                APIMethodEnum apiMethodType = (APIMethodEnum)Enum.Parse(typeof(APIMethodEnum), methodType);
+                APIMethodEnum apiMethodType = (APIMethodEnum)Enum.Parse(typeof(APIMethodEnum), methodType.ToUpper());
 
                 var httpClient = _clientFactory.CreateClient("RouterClient");
                 httpClient.Timeout = TimeSpan.FromMinutes(_routerSettings.Value.HttpConnectionTimeOut);
