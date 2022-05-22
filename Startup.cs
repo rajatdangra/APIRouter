@@ -35,8 +35,29 @@ namespace Router
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Router", Version = "v1" });
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic Authorization header using the Bearer scheme."
+                });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "basic"
+                                }
+                            },
+                            new string[] {}
+                    }
+                });
             });
-
 
             services.Configure<RouterConfig>(Configuration.GetSection("RouterConfig"));
             services.AddHttpClient<RouterDataContext>();
@@ -46,7 +67,7 @@ namespace Router
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
             //services.AddAuthentication();
             //services.AddAuthorization();
-            
+
             // configure DI for application services
             services.AddScoped<IRouterDataContext, RouterDataContext>();
             services.AddScoped<IUserService, UserService>();
