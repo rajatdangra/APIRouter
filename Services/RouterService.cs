@@ -20,15 +20,15 @@ using Router.Models;
 using Router.Enums;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.Interfaces;
 
-namespace Router.DataAccess.DataContext
+namespace Router.Services
 {
-    public class RouterDataContext : IRouterDataContext
+    public class RouterService : IRouterService
     {
         private readonly IOptions<RouterConfig> _routerSettings;
         private readonly IHttpClientFactory _clientFactory;
-        private readonly ILogger<RouterDataContext> _logger;
+        private readonly ILogger<RouterService> _logger;
 
-        public RouterDataContext(IHttpClientFactory clientFactory, IOptions<RouterConfig> routerSettings, ILogger<RouterDataContext> logger)
+        public RouterService(IHttpClientFactory clientFactory, IOptions<RouterConfig> routerSettings, ILogger<RouterService> logger)
         {
             _routerSettings = routerSettings;
             _clientFactory = clientFactory;

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Router.Configuration;
-using Router.DataAccess.DataContext;
+using Router.Services;
 using Router.Models;
 using System;
 using System.Collections.Generic;
@@ -21,14 +21,14 @@ namespace Router.Controllers
     [Route("[controller]")]
     public class APIRouterController : ControllerBase
     {
-        private readonly IRouterDataContext _routerDataContext;
+        private readonly IRouterService _routerService;
         private readonly IOptions<RouterConfig> _routerSettings;
         private readonly ILogger<APIRouterController> _logger;
 
-        public APIRouterController(ILogger<APIRouterController> logger, IRouterDataContext routerDataContext, IOptions<RouterConfig> routerSettings)
+        public APIRouterController(ILogger<APIRouterController> logger, IRouterService routerService, IOptions<RouterConfig> routerSettings)
         {
             _logger = logger;
-            _routerDataContext = routerDataContext;
+            _routerService = routerService;
             _routerSettings = routerSettings;
         }
 
@@ -61,7 +61,7 @@ namespace Router.Controllers
             _logger.LogInformation($"JSON Date: {jsonData?.ToString()}");
 
             string otherURL = string.Empty;
-            var response = await _routerDataContext.CRUDOperations(routerRequest.URL, routerRequest.MethodType, routerRequest.Authenticator, routerRequest.Headers, jsonData/*, routerRequest.GUID, routerRequest.ApiType, routerRequest.CreateCSRFCreation, routerRequest.isCheckErrorResponse, otherURL, null*/);
+            var response = await _routerService.CRUDOperations(routerRequest.URL, routerRequest.MethodType, routerRequest.Authenticator, routerRequest.Headers, jsonData/*, routerRequest.GUID, routerRequest.ApiType, routerRequest.CreateCSRFCreation, routerRequest.isCheckErrorResponse, otherURL, null*/);
             var responseResult = JsonConvert.DeserializeObject<ExpandoObject>(Convert.ToString(response) ?? string.Empty);
             return new OkObjectResult(responseResult);
         }

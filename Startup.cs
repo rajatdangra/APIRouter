@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Router.Configuration;
-using Router.DataAccess.DataContext;
 using Router.Services;
 using System;
 using System.Collections.Generic;
@@ -60,7 +59,7 @@ namespace Router
             });
 
             services.Configure<RouterConfig>(Configuration.GetSection("RouterConfig"));
-            services.AddHttpClient<RouterDataContext>();
+            services.AddHttpClient<RouterService>();
 
             // configure basic authentication
             services.AddAuthentication("BasicAuthentication")
@@ -69,7 +68,7 @@ namespace Router
             //services.AddAuthorization();
 
             // configure DI for application services
-            services.AddScoped<IRouterDataContext, RouterDataContext>();
+            services.AddScoped<IRouterService, RouterService>();
             services.AddScoped<IUserService, UserService>();
         }
 
