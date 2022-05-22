@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Router.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,12 @@ namespace Router.Services
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         #region Property  
-        readonly IUserService _userService;
+        private readonly IOptions<RouterConfig> _routerSettings;
+        private readonly IUserService _userService;
         #endregion
 
         #region Constructor  
-        public BasicAuthenticationHandler(IUserService userService,
+        public BasicAuthenticationHandler(IUserService userService, IOptions<RouterConfig> routerSettings,
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
@@ -27,6 +29,7 @@ namespace Router.Services
             : base(options, logger, encoder, clock)
         {
             _userService = userService;
+            _routerSettings = routerSettings;
         }
         #endregion
 
@@ -35,13 +38,21 @@ namespace Router.Services
             string username = null;
             try
             {
-                var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
-                var credentials = Encoding.UTF8.GetString(Convert.FromBase64String(authHeader.Parameter)).Split(':');
-                username = credentials.FirstOrDefault();
-                var password = credentials.LastOrDefault();
+                bool isAuthenticationDisabled = _routerSettings.Value.DisableAuthentication;
+                if (!isAuthenticationDisabled)
+                {
+                    var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
+                    var credentials = Encoding.UTF8.GetString(Convert.FromBase64String(authHeader.Parameter)).Split(':');
+                    username = credentials.FirstOrDefault();
+                    var password = credentials.LastOrDefault();
 
-                if (!_userService.ValidateCredentials(username, password))
-                    throw new ArgumentException("Invalid credentials");
+                    if (!_userService.ValidateCredentials(username, password))
+                        throw new ArgumentException("Invalid credentials");
+                }
+                else
+                {
+                    username = "Authentication Disabled";
+                }
             }
             catch (Exception ex)
             {

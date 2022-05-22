@@ -62,7 +62,7 @@ namespace Router
             services.Configure<RouterConfig>(Configuration.GetSection("RouterConfig"));
             services.AddHttpClient<RouterDataContext>();
 
-            // configure basic authentication 
+            // configure basic authentication
             services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
             //services.AddAuthentication();
