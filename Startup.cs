@@ -93,7 +93,7 @@ namespace Router
             /// Use CORS
             app.UseCors();
 
-            //app.UseAuthenticationMiddleware();
+            // app.UseAuthenticationMiddleware();
             app.UseAuthentication();
             app.UseAuthorization();
 
