@@ -51,8 +51,19 @@ namespace Router.DataAccess.DataContext
                 StringBuilder sbRouter = new StringBuilder();
                 sbRouter.Append($"Router URL: {url} {Environment.NewLine}");
                 sbRouter.Append($"Method: {methodType} {Environment.NewLine}");
-
-                APIMethodEnum apiMethodType = (APIMethodEnum)Enum.Parse(typeof(APIMethodEnum), methodType.ToUpper());
+                
+                object apiMethod;
+                APIMethodEnum apiMethodType;
+                if (Enum.TryParse(typeof(APIMethodEnum), methodType, ignoreCase: true, out apiMethod))
+                {
+                    apiMethodType = (APIMethodEnum)apiMethod;
+                }
+                else
+                {
+                    var errorInfo = $"Exception : Invalid MethodType - {methodType}";
+                    _logger.LogInformation(errorInfo);
+                    throw new NotSupportedException(errorInfo);
+                }
 
                 var httpClient = _clientFactory.CreateClient("RouterClient");
                 httpClient.Timeout = TimeSpan.FromMinutes(_routerSettings.Value.HttpConnectionTimeOut);
@@ -151,7 +162,10 @@ namespace Router.DataAccess.DataContext
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Router Failed Response : {ex}");
+                var errorInfo = $"Router Failed Response : {ex}";
+                _logger.LogInformation(errorInfo);
+                //ResponseResult = JsonConvert.DeserializeObject<JObject>(Convert.ToString(errorInfo));
+                throw new Exception(errorInfo);
             }
             return Convert.ToString(Result);
         }

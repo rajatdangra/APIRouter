@@ -48,7 +48,15 @@ namespace Router.Controllers
         [HttpPost(ApiRoutes.Router.Route)]
         public async Task<IActionResult> Route([BindRequired, FromBody] RouterRequest routerRequest)
         {
-            var jsonData = routerRequest.JSONBody != null ? JObject.Parse(Convert.ToString(routerRequest.JSONBody)) : routerRequest.JSONBody;
+            object jsonData = null;
+            try
+            {
+                jsonData = routerRequest.JSONBody != null ? JObject.Parse(Convert.ToString(routerRequest.JSONBody)) : routerRequest.JSONBody;
+            }
+            catch
+            {
+                _logger.LogInformation($"Invalid JSONBody: {routerRequest.JSONBody}");
+            }
 
             _logger.LogInformation($"JSON Date: {jsonData?.ToString()}");
 
