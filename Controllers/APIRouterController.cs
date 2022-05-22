@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace Router.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class APIRouterController : ControllerBase
