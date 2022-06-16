@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace Router.Enums
 {
-    public enum TokenType
+    public enum AuthorizationType
     {
         None = 0,
-        Bearer = 1,
-        Basic = 2
+        APIKey = 1,
+        Bearer = 2,
+        Basic = 3,
+        OAuth = 4,
     }
 }

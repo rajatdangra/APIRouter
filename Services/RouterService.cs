@@ -81,16 +81,22 @@ namespace Router.Services
                 {
                     switch (authenticator.TokenType)
                     {
-                        case TokenType.None:
+                        case AuthorizationType.None:
                             break;
-                        case TokenType.Bearer:
+                        case AuthorizationType.APIKey:
+                            break;
+                        case AuthorizationType.Bearer:
                             authenticator.ApiKey = authenticator.IsEncode ? Authenticator.Encoding(authenticator.ApiKey) : authenticator.ApiKey;
-                            httpClient.DefaultRequestHeaders.Add("Authorization", $"{TokenType.Bearer} {authenticator.ApiKey}");
+                            httpClient.DefaultRequestHeaders.Add("Authorization", $"{AuthorizationType.Bearer} {authenticator.ApiKey}");
                             break;
-                        case TokenType.Basic:
+                        case AuthorizationType.Basic:
                             string apikey = $"{authenticator.Username}:{authenticator.Password}";
                             apikey = authenticator.IsEncode ? Authenticator.Encoding(apikey) : apikey;
-                            httpClient.DefaultRequestHeaders.Add("Authorization", $"{TokenType.Basic} {apikey}");
+                            httpClient.DefaultRequestHeaders.Add("Authorization", $"{AuthorizationType.Basic} {apikey}");
+                            break;
+                        case AuthorizationType.OAuth:
+                            break;
+                        default:
                             break;
                     }
                 }

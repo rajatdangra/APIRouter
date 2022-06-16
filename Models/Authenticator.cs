@@ -9,7 +9,7 @@ namespace Router.Models
 {
     public class Authenticator
     {
-        public TokenType TokenType { get; set; }
+        public AuthorizationType TokenType { get; set; }
         public string ApiKey { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
