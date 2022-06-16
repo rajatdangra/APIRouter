@@ -1,23 +1,11 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Router.Configuration;
-using Router.Interfaces;
 using Router.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Router
 {
@@ -91,42 +79,7 @@ namespace Router
                 #endregion
             });
 
-            services.Configure<RouterConfig>(Configuration.GetSection("RouterConfig"));
-            services.Configure<TokenConfig>(Configuration.GetSection("TokenConfig"));
-            services.AddHttpClient<RouterService>();
-            //services.AddHttpClient<JwtTokenService>();
-
-            #region Configure Basic Authentication
-            //services.AddAuthentication("BasicAuthentication")
-            //    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
-            #endregion
-
-            //services.AddAuthentication();
-            //services.AddAuthorization();
-
-            #region Configure JWT Authentication
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = Configuration["TokenConfig:Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["TokenConfig:Audience"],
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenConfig:Key"]))
-                };
-            });
-            #endregion
-
-
-            // configure DI for application services
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRouterService, RouterService>();
-            services.AddScoped<ITokenService, JwtTokenService>();
+            services.AddAppServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -149,8 +102,9 @@ namespace Router
             /// Use CORS
             app.UseCors();
 
-            // app.UseAuthenticationMiddleware();
-            app.UseAuthentication();
+            //  app.UseAuthenticationFilter();
+            //app.UseAuthentication();
+            app.UseCustomAuthentication(Configuration);
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

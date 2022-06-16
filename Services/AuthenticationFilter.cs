@@ -33,10 +33,8 @@ namespace Router.Services
 
         public async Task Invoke(HttpContext httpContext)
         {
-
             try
             {
-
                 bool isAuthenticationDisabled = _routerSettings.Value.DisableAuthentication;
                 if (!isAuthenticationDisabled)
                 {
