@@ -9,11 +9,15 @@ namespace Router.Configuration
     {
         public const string Root = "api";
         public const string Version = "1";
-        public const string Base = Root + "/" + Version;
+        public const string Base = $"{Root}/{Version}/";
 
         public static class Router
         {
-            public const string Route = Base + "/Route";
+            public const string Route = /*Base +*/ "Route";
+        }
+        public static class Token
+        {
+            public const string GetToken = /*Base +*/ "GetToken";
         }
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Router.Configuration;
 using Microsoft.Extensions.Options;
+using Router.Interfaces;
 
 namespace Router.Services
 {
@@ -35,11 +36,11 @@ namespace Router.Services
 
             try
             {
-                var headers = httpContext.Request.Headers;
 
                 bool isAuthenticationDisabled = _routerSettings.Value.DisableAuthentication;
                 if (!isAuthenticationDisabled)
                 {
+                    var headers = httpContext.Request.Headers;
                     var authHeader = AuthenticationHeaderValue.Parse(headers["Authorization"]);
                     var credentials = Encoding.UTF8.GetString(Convert.FromBase64String(authHeader.Parameter)).Split(':');
                     var username = credentials.FirstOrDefault();

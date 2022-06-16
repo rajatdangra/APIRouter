@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Router.Configuration;
+using Router.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

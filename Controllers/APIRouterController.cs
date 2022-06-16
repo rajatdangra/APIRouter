@@ -6,19 +6,19 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Router.Configuration;
-using Router.Services;
 using Router.Models;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
+using Router.Interfaces;
 
 namespace Router.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class APIRouterController : ControllerBase
     {
         private readonly IRouterService _routerService;
