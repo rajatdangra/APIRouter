@@ -12,14 +12,13 @@ using System.Text;
 using System;
 using Microsoft.AspNetCore.Builder;
 
-namespace Router
+namespace Router.DependencyInjection
 {
-    public static class ExtensionMethods
+    public static class AppServicesExtensions
     {
         public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<RouterConfig>(configuration.GetSection("RouterConfig"));
-            services.Configure<TokenConfig>(configuration.GetSection("TokenConfig"));
+            
             services.AddHttpClient<RouterService>();
             //services.AddHttpClient<JwtTokenService>();
 

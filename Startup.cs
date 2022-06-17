@@ -5,7 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Router.Configuration;
+using Router.DependencyInjection;
 using Router.Services;
+using SCM.CisApi.WebApi.DependencyInjection;
 
 namespace Router
 {
@@ -21,63 +24,17 @@ namespace Router
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.Configure<RouterConfig>(Configuration.GetSection("RouterConfig"));
+            services.Configure<TokenConfig>(Configuration.GetSection("TokenConfig"));
+
+            /// Add CORS
+            services.AddCorsPolicy();
+
             services.AddControllers();
             //services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Router", Version = "v1" });
-                
-                #region Configure Basic Authentication
-                //c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
-                //{
-                //    Name = "Authorization",
-                //    Type = SecuritySchemeType.Http,
-                //    Scheme = "basic",
-                //    In = ParameterLocation.Header,
-                //    Description = "Basic Authorization header using the Bearer scheme."
-                //});
-                //c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                //{
-                //    {
-                //          new OpenApiSecurityScheme
-                //            {
-                //                Reference = new OpenApiReference
-                //                {
-                //                    Type = ReferenceType.SecurityScheme,
-                //                    Id = "basic"
-                //                }
-                //            },
-                //            new string[] {}
-                //    }
-                //});
-                #endregion
-
-                #region Configure Bearer Authentication
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    In = ParameterLocation.Header,
-                    Description = "Bearer Authorization header using the Bearer scheme."
-                });
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                          new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                }
-                            },
-                            new string[] {}
-                    }
-                });
-                #endregion
-            });
+            
+            /// Add Swagger 
+            services.AddSwagger();
 
             services.AddAppServices(Configuration);
         }
@@ -92,15 +49,15 @@ namespace Router
                 //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Router v1"));
             }
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Router v1"));
+            /// Use Swagger
+            app.UseVersionedSwagger(Configuration);
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             /// Use CORS
-            app.UseCors();
+            app.UseCorsPolicy();
 
             //  app.UseAuthenticationFilter();
             //app.UseAuthentication();
