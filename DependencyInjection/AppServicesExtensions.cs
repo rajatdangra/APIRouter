@@ -30,27 +30,38 @@ namespace Router.DependencyInjection
             //services.AddAuthentication();
             //services.AddAuthorization();
 
-            #region Configure JWT Authentication
-            services.AddAuthentication(options =>
+            bool isAuthenticationDisabled = Convert.ToBoolean(configuration["RouterConfig:DisableAuthentication"]);
+            if (!isAuthenticationDisabled)
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = false;
-                options.TokenValidationParameters = new TokenValidationParameters()
+                #region Configure JWT Authentication
+                services.AddAuthentication(options =>
                 {
-                    ValidateIssuer = true,
-                    ValidIssuer = configuration["TokenConfig:Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = configuration["TokenConfig:Audience"],
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenConfig:Key"]))
-                };
-            });
-            #endregion
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }).AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = false;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = configuration["TokenConfig:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = configuration["TokenConfig:Audience"],
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenConfig:Key"]))
+                    };
+                });
+                #endregion
+            }
+            else
+            {
+                #region Configure Basic Authentication
+                services.AddAuthentication("BasicAuthentication")
+                    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+                #endregion
+            }
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
@@ -63,7 +74,7 @@ namespace Router.DependencyInjection
         public static IApplicationBuilder UseCustomAuthentication(this IApplicationBuilder app, IConfiguration configuration)
         {
             bool isAuthenticationDisabled = Convert.ToBoolean(configuration["RouterConfig:DisableAuthentication"]);
-            if (!isAuthenticationDisabled)
+            //if (!isAuthenticationDisabled)
             {
                 app.UseAuthentication();
             }
